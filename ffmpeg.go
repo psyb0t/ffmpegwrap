@@ -116,9 +116,17 @@ func (f *FFMPEG) Run() error {
 }
 
 func (f *FFMPEG) Stop() error {
+	if f.Command.Cmd == nil {
+		return nil
+	}
+
 	return f.Command.Cmd.Process.Signal(os.Interrupt)
 }
 
 func (f *FFMPEG) Kill() error {
+	if f.Command.Cmd == nil {
+		return nil
+	}
+
 	return f.Command.Cmd.Process.Signal(os.Kill)
 }
