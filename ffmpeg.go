@@ -116,7 +116,7 @@ func (f *FFMPEG) Run() error {
 }
 
 func (f *FFMPEG) Stop() error {
-	if f.Command.Cmd == nil {
+	if f.Command.Cmd == nil || f.Command.Cmd.Process == nil {
 		return nil
 	}
 
@@ -124,7 +124,7 @@ func (f *FFMPEG) Stop() error {
 }
 
 func (f *FFMPEG) Kill() error {
-	if f.Command.Cmd == nil {
+	if f.Command.Cmd == nil || f.Command.Cmd.Process == nil {
 		return nil
 	}
 
