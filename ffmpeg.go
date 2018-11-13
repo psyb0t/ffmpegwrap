@@ -115,6 +115,39 @@ func (f *FFMPEG) Run() error {
 	return nil
 }
 
+func (f *FFMPEG) RunBlocking() error {
+	cmdParts := strings.Fields(f.Compile())
+	f.Command.Cmd = exec.Command(cmdParts[0], cmdParts[1:]...)
+
+	f.Command.Cmd.Stdout = &f.Command.Stdout
+	f.Command.Cmd.Stderr = &f.Command.Stderr
+
+	err := f.Command.Cmd.Start()
+	if err != nil {
+		return err
+	}
+
+	f.Running = true
+
+	err = f.Command.Cmd.Wait()
+	if err != nil {
+		exiterr, ok := err.(*exec.ExitError)
+		if ok {
+			status := exiterr.Sys().(syscall.WaitStatus)
+			f.Command.ExitStatus = status.ExitStatus()
+		} else {
+			f.Command.ExitStatus = 1
+		}
+	} else {
+		status := f.Command.Cmd.ProcessState.Sys().(syscall.WaitStatus)
+		f.Command.ExitStatus = status.ExitStatus()
+	}
+
+	f.Running = false
+
+	return nil
+}
+
 func (f *FFMPEG) Stop() error {
 	if f.Command.Cmd == nil || f.Command.Cmd.Process == nil {
 		return nil
