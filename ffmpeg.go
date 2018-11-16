@@ -24,12 +24,13 @@ type FFMPEG struct {
 }
 
 func NewFFMPEG() *FFMPEG {
-	ffmpeg := &FFMPEG{}
-	ffmpeg.BinPath = "ffmpeg"
-	ffmpeg.Flags = map[string]string{
-		"-hide_banner": "",
-		"-y": "",
-		"-loglevel": "error",
+	ffmpeg := &FFMPEG{
+		BinPath: "ffmpeg",
+		Flags: map[string]string{
+			"-hide_banner": "",
+			"-y": "",
+			"-loglevel": "error",
+		},
 	}
 
 	return ffmpeg
@@ -63,6 +64,14 @@ func (f *FFMPEG) GetStdout() string {
 
 func (f *FFMPEG) GetStderr() string {
 	return f.Command.Stderr.String()
+}
+
+func (f *FFMPEG) ClearStdout() {
+	f.Command.Stdout.Reset()
+}
+
+func (f *FFMPEG) ClearStderr() {
+	f.Command.Stderr.Reset()
 }
 
 func (f *FFMPEG) Compile() string {
